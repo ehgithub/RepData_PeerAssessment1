@@ -1,3 +1,13 @@
+## Initial remarks
+
+This is my attempt to resolve the peer assessment 1 of the Reproducible Research course. 
+
+In the REPO, these files can be found:
+
+* **Readme.md** - Detail of the assessment, questions and data explanation.
+* **PA1_template.Rmd** - answers to the questions; explanation of the analysis, process and data transformation; and the related R code.
+
+
 ## Introduction
 
 It is now possible to collect a large amount of data about personal

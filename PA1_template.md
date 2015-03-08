@@ -14,10 +14,22 @@ This solution assumes the data file is already downloaded in your working direct
  
 For plotting and data manipulation it uses qggplo2 and dplyr. Those libraries should exists in your R installation
 
-```{r base}
+
+```r
 # read data file
 activity <- read.csv("activity.csv")
+```
 
+```
+## Warning in file(file, "rt"): cannot open file 'activity.csv': No such file
+## or directory
+```
+
+```
+## Error in file(file, "rt"): cannot open the connection
+```
+
+```r
 library(dplyr)
 library(ggplot2)
 ```
@@ -33,20 +45,24 @@ Second, generate an histogram of the total number of steps taken by day
 Lastly, calculate mean and median of the TOTAL number of stpes taken
 
 
-```{r first}
+
+```r
 # sumarize and calculate total stpes taken by day
 su.activity <- summarise(group_by(activity, date), tot = sum(steps), mean = mean(steps), median = median(steps))
 
 # generate histogram
 hist(su.activity$tot, 
      xlab='Total Steps', main="Summary of steps taken per day")
+```
 
+![plot of chunk first](figure/first-1.png) 
+
+```r
 # calculate and report mean and median of TOTAL stpes taken per day
 one.mean <- mean(su.activity$tot, na.rm = TRUE)
 one.median <- median(su.activity$tot, na.rm = TRUE)
-
 ```
-Mean is `r one.mean`, Median is `one.median`.
+Mean is 1.0766189 &times; 10<sup>4</sup>, Median is `one.median`.
 
 
 ## 2. What is the average daily activity pattern?
@@ -63,7 +79,8 @@ Second, convert "interval" variable into factor for easy summarization and plott
 Third, summarize the dataset by interval and calculate Total, Mean and Median
 Fourth, generate the plot
 
-```{r second}
+
+```r
 # generate new data frame
 activity2 <- na.omit(activity)
 # convert interval into factor
@@ -78,7 +95,9 @@ plot(su.activity2$interval,su.activity2$mean,type = "n",
 lines(su.activity2$interval, su.activity2$mean, col = "black")
 ```
 
-As the plot shows, the maximum average steps are at 8:35 interval, with `r two.max` 
+![plot of chunk second](figure/second-1.png) 
+
+As the plot shows, the maximum average steps are at 8:35 interval, with 206.1698113 
 
 
 ## 3. Imputing missing values
@@ -100,11 +119,18 @@ Third, create a new dtataset with the filled values.this is accomplished usinf a
 forth, sumarize the new filled values by date and calulate total, mean and median
 fifth, generate a side by side histogram to visually note the diferences of original and filled datasets
 
-```{r third}
+
+```r
 # calculate total number of missing values
 missing <- is.na(activity$steps)
 sum(missing)
+```
 
+```
+## [1] 2304
+```
+
+```r
 # strategy= asign mean of activity by interval and create a new datataset 
 # first join the original activity dataframe with the summary in point 1 by "activity"
 activity3 <- merge(activity, su.activity2, by.x="interval", by.y="interval")
@@ -124,13 +150,18 @@ hist(su.activity$tot,
      xlab='Total Steps', main="Steps taken per day - Original Data")
 hist(su.activity3$tot,
      xlab='Total Steps', main="Steps taken per day - Filled Data")
+```
+
+![plot of chunk third](figure/third-1.png) 
+
+```r
 # calculate and report mean and median of TOTAL stpes taken per day
 third.mean <- mean(su.activity3$tot, na.rm = TRUE)
 third.median <- median(su.activity3$tot, na.rm = TRUE)
 ```
 
-Mean and median of original dataset are `r one.mean` and `one.median` respectively
-Mean and median of filled dataset are `r third.mean` and `third.median` respectively
+Mean and median of original dataset are 1.0766189 &times; 10<sup>4</sup> and `one.median` respectively
+Mean and median of filled dataset are 1.0766189 &times; 10<sup>4</sup> and `third.median` respectively
 
 There are not significan diferences between original and filled datasets mean and median values with the chosen filled strategy
 
@@ -153,7 +184,8 @@ second, create a new column "day" determine that coantains "weekday" or "weekend
 Third, in a new dataframe, sumarize by new column "day" and interval, calulating Total stpes and mean of steps  
 fourth, genearate a panle plot showing the behaviour in weekdays and weenends
 
-```{r fourth}
+
+```r
 ## add a temp column with dates in new format
 activity3$d.week <- as.POSIXlt(activity3$date,format="%Y-%m-%d") 
 activity3$day <- weekdays(activity3$d.week)  ## generates "day name"
@@ -178,7 +210,8 @@ qplot(interval, mean, data=su.activity4, facets = day ~ .
       , main="General"
       , xlab = "Interval"
       , ylab = "number of steps")
-
 ```
+
+![plot of chunk fourth](figure/fourth-1.png) 
 
 Overall, thereare less stpes in the weekends, as per plot
